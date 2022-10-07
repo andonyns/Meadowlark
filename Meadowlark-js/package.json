@@ -3,6 +3,7 @@
   "description": "The Ed-Fi Meadowlark project",
   "private": true,
   "devDependencies": {
+    "@playwright/test": "^1.26.1",
     "@shelf/jest-mongodb": "^4.1.0",
     "@types/eslint": "^8.4.3",
     "@types/jest": "29.0.3",
