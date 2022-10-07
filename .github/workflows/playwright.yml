@@ -6,6 +6,10 @@ on:
     branches: [main]
 jobs:
   test:
+    defaults:
+      run:
+        working-directory: Meadowlark-js
+
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
