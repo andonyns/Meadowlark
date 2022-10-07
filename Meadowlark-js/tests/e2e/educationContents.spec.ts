@@ -37,7 +37,7 @@ test('should create education content', async ({ request }) => {
   });
   expect(contentClass.ok()).toBeTruthy();
 
-  let location = contentClass.headers().location;
+  const location = contentClass.headers().location;
 
   if(!location) {
     throw "Location not found";
@@ -51,7 +51,7 @@ test('should create education content', async ({ request }) => {
 
   expect(locatorByDescriptor.ok()).toBeTruthy();
 
-  let responseJson = await locatorByDescriptor.json();
+  const responseJson = await locatorByDescriptor.json();
   const contentClassDescriptor = responseJson["namespace"]+"#"+responseJson["description"];
 
   const educationContent = await request.post('/local/v3.3b/ed-fi/educationContents', {
@@ -69,7 +69,7 @@ test('should create education content', async ({ request }) => {
 
   expect(educationContent.statusText()).toEqual("Created");
 
-  let educationContentLocation = contentClass.headers().location;
+  const educationContentLocation = contentClass.headers().location;
 
   if(!educationContentLocation) {
     throw "Location not found";
