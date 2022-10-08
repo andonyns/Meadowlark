@@ -1,14 +1,14 @@
-import { test, expect } from '@playwright/test';
+import {test, expect} from '@playwright/test';
 
 let token: string;
 
-test.beforeAll(async ({ request }) => {
+test.beforeAll(async ({request}) => {
   const clientId = "meadowlark_key_1";
   const clientSecret = "meadowlark_secret_1";
 
   const getToken = await request.post('/local/api/oauth/token', {
     headers: {
-     "Accept": "application/x-www-form-urlencoded"
+      "Accept": "application/x-www-form-urlencoded"
     },
     data: {
       "grant_type": "client_credentials",
@@ -22,7 +22,7 @@ test.beforeAll(async ({ request }) => {
 
 });
 
-test('should create education content', async ({ request }) => {
+test('should create education content', async ({request}) => {
 
   const contentClass = await request.post(`/local/v3.3b/ed-fi/contentClassDescriptors`, {
     headers: {
@@ -39,7 +39,7 @@ test('should create education content', async ({ request }) => {
 
   const location = contentClass.headers().location;
 
-  if(!location) {
+  if (!location) {
     throw "Location not found";
   }
 
@@ -52,7 +52,7 @@ test('should create education content', async ({ request }) => {
   expect(locatorByDescriptor.ok()).toBeTruthy();
 
   const responseJson = await locatorByDescriptor.json();
-  const contentClassDescriptor = responseJson["namespace"]+"#"+responseJson["description"];
+  const contentClassDescriptor = responseJson[ "namespace" ] + "#" + responseJson[ "description" ];
 
   const educationContent = await request.post('/local/v3.3b/ed-fi/educationContents', {
     headers: {
@@ -71,7 +71,7 @@ test('should create education content', async ({ request }) => {
 
   const educationContentLocation = contentClass.headers().location;
 
-  if(!educationContentLocation) {
+  if (!educationContentLocation) {
     throw "Location not found";
   }
 
