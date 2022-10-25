@@ -202,6 +202,9 @@ jobs:
       - name: Stop Fastify
         run: |
           pkill -9 node
+          docker kill mongo1
+          docker kill mongo2
+          docker kill mongo3
 
       - name: Start Fastify against Postgres
         run: |
