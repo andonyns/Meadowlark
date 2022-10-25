@@ -161,8 +161,10 @@ jobs:
           echo '127.0.0.1 mongo1 mongo2 mongo3' | sudo tee -a /etc/hosts
         working-directory: Meadowlark-js/backends/meadowlark-mongodb-backend/docker/
 
-      - name: Start OpenSearch
-        run: docker compose -f ./backends/meadowlark-opensearch-backend/docker/docker-compose.yml up -d
+      - name: Start Containers
+        run: |
+          docker compose -f ./backends/meadowlark-postgresql-backend/docker/docker-compose.yml up -d
+          docker compose -f ./backends/meadowlark-opensearch-backend/docker/docker-compose.yml up -d
 
       - name: Setup Replica Set
         run: docker exec mongo1 /scripts/mongo-rs-setup.sh
@@ -195,6 +197,29 @@ jobs:
           cp ./tests/e2e/.env.example ./tests/e2e/.env
           yarn test:e2e --ci --config ./jest.ci-config.js
         env:
+          JEST_JUNIT_OUTPUT_DIR: mongo-e2e-tests
+
+      - name: Stop Fastify
+        run: |
+          jobs -l
+          pkill -9 start:local
+
+      - name: Start Fastify against Postgres
+        run: |
+          cp ./tests/e2e/setup/e2e.env ./services/meadowlark-fastify/.env
+          yarn start:local &
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: abcdefgh1!
+          OPENSEARCH_USERNAME: admin
+          OPENSEARCH_PASSWORD: admin
+          DOCUMENT_STORE_PLUGIN: "@edfi/meadowlark-postgresql-backend"
+
+      - name: End to End tests for Postgres
+        run: |
+          cp ./tests/e2e/.env.example ./tests/e2e/.env
+          yarn test:e2e --ci --config ./jest.ci-config.js
+        env:
           JEST_JUNIT_OUTPUT_DIR: pg-e2e-tests
 
       - name: Upload test results
@@ -203,4 +228,5 @@ jobs:
           name: test-results
           path: |
             Meadowlark-js/pg-e2e-tests/junit.xml
+            Meadowlark-js/mongo-e2e-tests/junit.xml
           retention-days: 1
