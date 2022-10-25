@@ -201,8 +201,7 @@ jobs:
 
       - name: Stop Fastify
         run: |
-          jobs -l
-          pkill -9 start:local
+          pkill -9 node
 
       - name: Start Fastify against Postgres
         run: |
