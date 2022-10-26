@@ -150,6 +150,11 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - name: Unit tests with code coverage
+        run: yarn test:unit:coverage --ci --config ./jest.ci-config.js
+        env:
+          JEST_JUNIT_OUTPUT_DIR: unit-tests
+
       # - name: Setup Mongo
       #   run: |
       #     chmod -R +x ./scripts
