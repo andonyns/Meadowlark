@@ -198,36 +198,36 @@ jobs:
         env:
           JEST_JUNIT_OUTPUT_DIR: mongo-e2e-tests
 
-      - name: Stop Fastify
-        run: |
-          pkill -9 node
-          # docker kill mongo1
-          # docker kill mongo2
-          # docker kill mongo3
+      # - name: Stop Fastify
+      #   run: |
+      #     pkill -9 node
+      #     # docker kill mongo1
+      #     # docker kill mongo2
+      #     # docker kill mongo3
 
-      - name: Start Fastify against Postgres
-        run: |
-          cp ./tests/e2e/setup/e2e.env ./services/meadowlark-fastify/.env
-          yarn start:local &
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: abcdefgh1!
-          OPENSEARCH_USERNAME: admin
-          OPENSEARCH_PASSWORD: admin
-          DOCUMENT_STORE_PLUGIN: "@edfi/meadowlark-postgresql-backend"
+      # - name: Start Fastify against Postgres
+      #   run: |
+      #     cp ./tests/e2e/setup/e2e.env ./services/meadowlark-fastify/.env
+      #     yarn start:local &
+      #   env:
+      #     POSTGRES_USER: postgres
+      #     POSTGRES_PASSWORD: abcdefgh1!
+      #     OPENSEARCH_USERNAME: admin
+      #     OPENSEARCH_PASSWORD: admin
+      #     DOCUMENT_STORE_PLUGIN: "@edfi/meadowlark-postgresql-backend"
 
-      - name: End to End tests for Postgres
-        run: |
-          cp ./tests/e2e/.env.example ./tests/e2e/.env
-          yarn test:e2e --ci --config ./jest.ci-config.js
-        env:
-          JEST_JUNIT_OUTPUT_DIR: pg-e2e-tests
+      # - name: End to End tests for Postgres
+      #   run: |
+      #     cp ./tests/e2e/.env.example ./tests/e2e/.env
+      #     yarn test:e2e --ci --config ./jest.ci-config.js
+      #   env:
+      #     JEST_JUNIT_OUTPUT_DIR: pg-e2e-tests
 
       - name: Upload test results
         uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # v3.1.0
         with:
           name: test-results
           path: |
-            Meadowlark-js/pg-e2e-tests/junit.xml
+            # Meadowlark-js/pg-e2e-tests/junit.xml
             Meadowlark-js/mongo-e2e-tests/junit.xml
           retention-days: 1
