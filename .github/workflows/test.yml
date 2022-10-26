@@ -150,34 +150,34 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Setup Mongo
-        run: |
-          chmod -R +x ./scripts
-          docker run -d --name mongo-temp -v mongo-auth:/auth mongo:4.0.28
-          docker exec mongo-temp mkdir /scripts
-          docker cp ./scripts/mongo-key-file-setup.sh mongo-temp:/scripts/mongo-key-file-setup.sh
-          docker exec mongo-temp /scripts/mongo-key-file-setup.sh
-          docker compose up -d
-          echo '127.0.0.1 mongo1 mongo2 mongo3' | sudo tee -a /etc/hosts
-        working-directory: Meadowlark-js/backends/meadowlark-mongodb-backend/docker/
+      # - name: Setup Mongo
+      #   run: |
+      #     chmod -R +x ./scripts
+      #     docker run -d --name mongo-temp -v mongo-auth:/auth mongo:4.0.28
+      #     docker exec mongo-temp mkdir /scripts
+      #     docker cp ./scripts/mongo-key-file-setup.sh mongo-temp:/scripts/mongo-key-file-setup.sh
+      #     docker exec mongo-temp /scripts/mongo-key-file-setup.sh
+      #     docker compose up -d
+      #     echo '127.0.0.1 mongo1 mongo2 mongo3' | sudo tee -a /etc/hosts
+      #   working-directory: Meadowlark-js/backends/meadowlark-mongodb-backend/docker/
 
       - name: Start Containers
         run: |
           docker compose -f ./backends/meadowlark-postgresql-backend/docker/docker-compose.yml up -d
           docker compose -f ./backends/meadowlark-opensearch-backend/docker/docker-compose.yml up -d
 
-      - name: Setup Replica Set
-        run: docker exec mongo1 /scripts/mongo-rs-setup.sh
-        working-directory: Meadowlark-js/backends/meadowlark-mongodb-backend/docker/
+      # - name: Setup Replica Set
+      #   run: docker exec mongo1 /scripts/mongo-rs-setup.sh
+      #   working-directory: Meadowlark-js/backends/meadowlark-mongodb-backend/docker/
 
-      - name: Wait for container
-        run: |
-          chmod +x ../eng/setup-mongo.sh
-          ../eng/setup-mongo.sh
+      # - name: Wait for container
+      #   run: |
+      #     chmod +x ../eng/setup-mongo.sh
+      #     ../eng/setup-mongo.sh
 
-      - name: Setup Users
-        run: docker exec -e ADMIN_USERNAME=mongo -e ADMIN_PASSWORD=abcdefgh1! mongo1 /scripts/mongo-user-setup.sh
-        working-directory: Meadowlark-js/backends/meadowlark-mongodb-backend/docker/
+      # - name: Setup Users
+      #   run: docker exec -e ADMIN_USERNAME=mongo -e ADMIN_PASSWORD=abcdefgh1! mongo1 /scripts/mongo-user-setup.sh
+      #   working-directory: Meadowlark-js/backends/meadowlark-mongodb-backend/docker/
 
       - name: Build
         run: yarn build
@@ -190,7 +190,6 @@ jobs:
           OPENSEARCH_USERNAME: admin
           OPENSEARCH_PASSWORD: admin
           DOCUMENT_STORE_PLUGIN: "@edfi/meadowlark-mongodb-backend"
-          MONGO_URL: mongodb://mongo:abcdefgh1!@mongo1:27017,mongo2:27018,mongo3:27019/?replicaSet=rs0
 
       - name: End to End tests for Mongo
         run: |
@@ -202,9 +201,9 @@ jobs:
       - name: Stop Fastify
         run: |
           pkill -9 node
-          docker kill mongo1
-          docker kill mongo2
-          docker kill mongo3
+          # docker kill mongo1
+          # docker kill mongo2
+          # docker kill mongo3
 
       - name: Start Fastify against Postgres
         run: |
