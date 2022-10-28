@@ -25,6 +25,7 @@
     "jest-junit": "^14.0.1",
     "lerna": "^3.22.1",
     "mongodb": "^4.5.0",
+    "mongodb-memory-server-core": "^8.9.3",
     "pg": "^8.7.3",
     "pg-format": "^1.0.4",
     "prettier": "2.6.2",
@@ -42,6 +43,7 @@
   "scripts": {
     "build": "lerna run build --stream",
     "build:clean": "lerna run build:clean --stream",
+    "setup:memory:mongo": "node ./tests/e2e/setup/setup-mongo.mjs",
     "test:all": "yarn test && yarn test:integration",
     "test": "yarn test:lint && yarn test:unit && yarn test:integration && yarn test:system && yarn test:e2e",
     "test:lint": "yarn test:lint:ts && yarn test:lint:eslint",

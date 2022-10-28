@@ -3765,7 +3765,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bson@npm:^4.6.3":
+"bson@npm:^4.6.3, bson@npm:^4.7.0":
   version: 4.7.0
   resolution: "bson@npm:4.7.0"
   dependencies:
@@ -4880,6 +4880,13 @@ __metadata:
   version: 2.0.1
   resolution: "denque@npm:2.0.1"
   checksum: ec398d1e3c6c8d4f5213dcf9ad74d7faa3b461e29a0019c9742b49a97ac5e16aa7134db45fa9d841e318e7722dd1ba670a474fde9a5b0d870b3a5fc6fe914c30
+  languageName: node
+  linkType: hard
+
+"denque@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "denque@npm:2.1.0"
+  checksum: 1d4ae1d05e59ac3a3481e7b478293f4b4c813819342273f3d5b826c7ffa9753c520919ba264f377e09108d24ec6cf0ec0ac729a5686cbb8f32d797126c5dae74
   languageName: node
   linkType: hard
 
@@ -7117,6 +7124,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ip@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "ip@npm:2.0.0"
+  checksum: cfcfac6b873b701996d71ec82a7dd27ba92450afdb421e356f44044ed688df04567344c36cbacea7d01b1c39a4c732dc012570ebe9bebfb06f27314bca625349
+  languageName: node
+  linkType: hard
+
 "ipaddr.js@npm:1.9.1":
   version: 1.9.1
   resolution: "ipaddr.js@npm:1.9.1"
@@ -8839,6 +8853,7 @@ __metadata:
     jest-junit: ^14.0.1
     lerna: ^3.22.1
     mongodb: ^4.5.0
+    mongodb-memory-server-core: ^8.9.3
     pg: ^8.7.3
     pg-format: ^1.0.4
     prettier: 2.6.2
@@ -9233,6 +9248,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mongodb-connection-string-url@npm:^2.5.3":
+  version: 2.5.4
+  resolution: "mongodb-connection-string-url@npm:2.5.4"
+  dependencies:
+    "@types/whatwg-url": ^8.2.1
+    whatwg-url: ^11.0.0
+  checksum: 9f431826b229488808e4a8a9e6bdde0162be3e6d5cad40867b69b2199ce009f568b67dc1bf587a43367904d8184f1c68689f7ea6574ed40b396726abde9485e1
+  languageName: node
+  linkType: hard
+
 "mongodb-memory-server-core@npm:8.8.0":
   version: 8.8.0
   resolution: "mongodb-memory-server-core@npm:8.8.0"
@@ -9254,6 +9279,30 @@ __metadata:
     uuid: ^8.3.1
     yauzl: ^2.10.0
   checksum: eafce387c34e3aeff66158ca95941d11c8a87f86b9c1219306727482afa0373281ec72204c133da27d781a4823f1170b7e2d3fbba9824a682ed3a512e47c4e02
+  languageName: node
+  linkType: hard
+
+"mongodb-memory-server-core@npm:^8.9.3":
+  version: 8.9.3
+  resolution: "mongodb-memory-server-core@npm:8.9.3"
+  dependencies:
+    "@types/tmp": ^0.2.3
+    async-mutex: ^0.3.2
+    camelcase: ^6.3.0
+    debug: ^4.3.4
+    find-cache-dir: ^3.3.2
+    get-port: ^5.1.1
+    https-proxy-agent: ^5.0.1
+    md5-file: ^5.0.0
+    mongodb: ~4.9.0
+    new-find-package-json: ^2.0.0
+    semver: ^7.3.7
+    tar-stream: ^2.1.4
+    tmp: ^0.2.1
+    tslib: ^2.4.0
+    uuid: ^8.3.1
+    yauzl: ^2.10.0
+  checksum: 2a8669253bd5fcb4431c013db41e4afed68d56a57002e45dde1f6a894ae79cfb237c09408b1aa5c15306b6db296ee4bbf0568313cd708f096266e925732a2665
   languageName: node
   linkType: hard
 
@@ -9296,6 +9345,22 @@ __metadata:
     saslprep:
       optional: true
   checksum: 6c8ddf1d14a4392d83702aa532e5a1e6deaa501cfd66e352a1226358422716e340465ca4b0f2c5d8f660bf15c06456059953fb99482f714c1dab408ecfe3aeea
+  languageName: node
+  linkType: hard
+
+"mongodb@npm:~4.9.0":
+  version: 4.9.1
+  resolution: "mongodb@npm:4.9.1"
+  dependencies:
+    bson: ^4.7.0
+    denque: ^2.1.0
+    mongodb-connection-string-url: ^2.5.3
+    saslprep: ^1.0.3
+    socks: ^2.7.0
+  dependenciesMeta:
+    saslprep:
+      optional: true
+  checksum: 43d66207f094930d134e263489f788c5efd0ef079bf059986cd887570b561067f4dcf23d6e4334d2fd13fee7ce3ef8f9b163e609fc48e03e1236b6407095a4c5
   languageName: node
   linkType: hard
 
@@ -11601,6 +11666,16 @@ __metadata:
     ip: ^1.1.5
     smart-buffer: ^4.2.0
   checksum: dd9194293059d737759d5c69273850ad4149f448426249325c4bea0e340d1cf3d266c3b022694b0dcf5d31f759de23657244c481fc1e8322add80b7985c36b5e
+  languageName: node
+  linkType: hard
+
+"socks@npm:^2.7.0":
+  version: 2.7.1
+  resolution: "socks@npm:2.7.1"
+  dependencies:
+    ip: ^2.0.0
+    smart-buffer: ^4.2.0
+  checksum: 259d9e3e8e1c9809a7f5c32238c3d4d2a36b39b83851d0f573bfde5f21c4b1288417ce1af06af1452569cd1eb0841169afd4998f0e04ba04656f6b7f0e46d748
   languageName: node
   linkType: hard
 

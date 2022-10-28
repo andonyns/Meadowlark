@@ -112,8 +112,9 @@ jobs:
       - if: ${{ matrix.config.db == 'Mongo' }}
         name: Setup Mongo
         run: |
-          chmod +x ../eng/setup-mongo.sh
-          ../eng/setup-mongo.sh
+          # chmod +x ../eng/setup-mongo.sh
+          # ../eng/setup-mongo.sh
+          node ./tests/e2e/setup/setup-mongo.mjs &
 
       - name: Cache Build
         uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 #v3.0.2
@@ -139,7 +140,6 @@ jobs:
           POSTGRES_PASSWORD: abcdefgh1!
           OPENSEARCH_USERNAME: admin
           OPENSEARCH_PASSWORD: admin
-          MONGO_URL: "mongodb://mongo:abcdefgh1!@mongo1:27017,mongo2:27018,mongo3:27019/?replicaSet=rs0"
 
       - name: End to End tests for ${{matrix.config.db}}
         run: |
