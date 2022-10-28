@@ -11,7 +11,7 @@ on:
       - completed
 
 jobs:
-  test-report:
+  report:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
