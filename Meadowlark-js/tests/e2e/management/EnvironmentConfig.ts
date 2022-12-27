@@ -7,16 +7,12 @@ import path from 'path';
 
 import { DockerComposeEnvironment, StartedDockerComposeEnvironment } from 'testcontainers';
 
-const mongoSetup = require('@shelf/jest-mongodb/lib/setup');
-
 let environment: StartedDockerComposeEnvironment;
 export function getEnvironment(): StartedDockerComposeEnvironment {
   return environment;
 }
 
 export async function configure(_config: any) {
-  await mongoSetup(_config);
-
   const composeFilePath = path.resolve(__dirname, '../automation-setup/');
   const composeFile = 'docker-compose.yml';
   environment = await new DockerComposeEnvironment(composeFilePath, composeFile).up();

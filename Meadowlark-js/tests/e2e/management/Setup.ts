@@ -5,6 +5,7 @@
 
 const path = require('path');
 const dotenv = require('dotenv');
+const mongoSetup = require('@shelf/jest-mongodb/lib/setup');
 
 const credentialManager = require('../helpers/Credentials');
 const setupServer = require('./ServerConfig');
@@ -17,17 +18,19 @@ dotenv.config({ path: path.join(process.cwd(), './services/meadowlark-fastify/.e
 module.exports = async (config) => {
   console.info(`\n🧪Running e2e tests with: ${process.env.DOCUMENT_STORE_PLUGIN}🧪\n`);
 
+  if (process.env.USE_EXISTING_ENVIRONMENT !== 'true' || process.env.CI) {
+    await mongoSetup(config);
+  }
+
   if (process.env.USE_EXISTING_ENVIRONMENT !== 'true') {
     try {
       await setupEnvironment.configure(config);
     } catch (error) {
       throw new Error(`Unexpected error setting up environment. Verify that Docker is running ${error}`);
     }
-
-    await setupServer.setup();
-  } else {
-    await setupServer.setServerRunning();
   }
+
+  await setupServer.setup();
 
   await credentialManager.authenticateAdmin();
   await credentialManager.createAutomationUsers();

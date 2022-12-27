@@ -8,9 +8,11 @@ const teardownServer = require('./ServerConfig');
 
 async function endServer() {
   try {
-    if (process.env.USE_EXISTING_ENVIRONMENT !== 'true' || !teardownServer.wasServerAlreadyRunning()) {
+    if (process.env.USE_EXISTING_ENVIRONMENT !== 'true') {
       await envConfig.getEnvironment().down();
+    }
 
+    if (!teardownServer.wasServerAlreadyRunning()) {
       process.exit(0);
     }
   } catch (error) {

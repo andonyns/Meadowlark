@@ -241,6 +241,29 @@ jobs:
             { db: "PGSQL", plugin: "@edfi/meadowlark-postgresql-backend" },
           ]
 
+    services:
+      opensearch:
+        image: opensearchproject/opensearch:latest
+        ports:
+          - 9200:9200
+        env:
+          cluster.name: opensearch-cluster
+          bootstrap.memory_lock: true # along with the memlock settings below, disables swapping
+          OPENSEARCH_JAVA_OPTS: -Xms512m -Xmx512m # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
+          discovery.type: single-node
+          DISABLE_INSTALL_DEMO_CONFIG: true # disables execution of install_demo_configuration.sh bundled with security plugin, which installs demo certificates and security configurations to OpenSearch
+          DISABLE_SECURITY_PLUGIN: true # disables security plugin entirely in OpenSearch by setting plugins.security.disabled: true in opensearch.yml
+
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: ${{env.POSTGRES_PASSWORD}}
+        # options: >-
+        #   --health-cmd pg_isready
+        #   --health-interval 10s
+        #   --health-timeout 5s
+        #   --health-retries 5
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
@@ -270,6 +293,20 @@ jobs:
         if: ${{ steps.modules-cache.outputs.cache-hit != 'true' }}
         run: yarn install
 
+      # - if: ${{ matrix.config.db == 'PGSQL' }}
+      #   name: Start Postgres Container
+      #   run: |
+      #     sudo systemctl start postgresql.service
+      #     sudo -u postgres psql -U postgres -d postgres -c "alter user postgres with password '${{ env.POSTGRES_PASSWORD }}';"
+
+      # Always start MongoDB, as it is used by the authorization system.
+      # - name: Start MongoDB
+      #   uses: supercharge/mongodb-github-action@538a4d2a1041920c47630172445cb688592d6e51 #v1.8.0
+      #   with:
+      #     mongodb-version: "4.0.28"
+      #     mongodb-replica-set: rs0
+      #     mongodb-port: 42069
+
       - name: Build Cache
         id: build-cache
         uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 #v3.0.11
@@ -291,6 +328,7 @@ jobs:
           OPENSEARCH_USERNAME: admin
           OPENSEARCH_PASSWORD: admin
           MONGO_URL: "mongodb://127.0.0.1:42069/?replicaSet=rs0"
+          USE_EXISTING_ENVIRONMENT: true
 
       # Workaround for issue https://github.com/actions/upload-artifact/issues/174
       - name: Upload test results
