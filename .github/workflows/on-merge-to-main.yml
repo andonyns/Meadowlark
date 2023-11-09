@@ -31,7 +31,7 @@ jobs:
         run:  |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          npx lerna@6.6.2 version prerelease --exact --amend --yes
+          npx lerna@6.6.2 version prerelease --exact --yes
 
 
       # Commit all changed files back to the repository
