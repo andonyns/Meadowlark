@@ -50,6 +50,7 @@ jobs:
         run: |
           $version = $(git describe ---tags)
           Write-Host $version
+          Write-Host "here"
 
           $body = @{
             tag_name = "$version"
