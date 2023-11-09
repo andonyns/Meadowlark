@@ -17,6 +17,9 @@ jobs:
   upgrade:
     name: Upgrade packages
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Meadowlark-js
     permissions:
       contents: write
     steps:
@@ -39,6 +42,7 @@ jobs:
   create-pre-releases:
     name: Create Pre-Releases
     runs-on: ubuntu-latest
+    needs: upgrade
     defaults:
       run:
         shell: pwsh
