@@ -28,7 +28,7 @@ jobs:
 
       - name: Update versions
         working-directory: Meadowlark-js
-        run: npx lerna@6.6.2 version prerelease --yes
+        run: npx lerna@6.6.2 version prerelease --no-git-tag-version --yes
 
       # Commit all changed files back to the repository
       - uses: planetscale/ghcommit-action@v0.1.18
