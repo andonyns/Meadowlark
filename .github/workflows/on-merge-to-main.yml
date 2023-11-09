@@ -42,7 +42,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          $v = cat lerna.json | jq .version
+          v=$(cat lerna.json | jq .version)
           git tag $v
 
   create-pre-releases:
