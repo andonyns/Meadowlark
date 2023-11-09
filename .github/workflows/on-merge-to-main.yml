@@ -27,12 +27,7 @@ jobs:
         uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
 
       - name: Update versions
-        working-directory: Meadowlark-js
-        run:  |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          npx lerna@6.6.2 version prerelease --exact --no-push --yes
-
+        run:  npx lerna@6.6.2 version prerelease --exact --no-git-tag-version --yes
 
       # Commit all changed files back to the repository
       - uses: planetscale/ghcommit-action@v0.1.18
@@ -40,9 +35,16 @@ jobs:
           commit_message: "$(git describe ---tags)"
           repo: ${{ github.repository }}
           branch: ${{ github.head_ref || github.ref_name }}
-          empty: true
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - name: tag
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          $v = cat lerna.json | jq .version
+          git tag $v
+          git push origin $v
 
   create-pre-releases:
     name: Create Pre-Releases
