@@ -31,7 +31,7 @@ jobs:
         run:  |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          npx lerna@6.6.2 version prerelease --exact --yes
+          npx lerna@6.6.2 version prerelease --exact --no-push --yes
 
 
       # Commit all changed files back to the repository
@@ -40,6 +40,7 @@ jobs:
           commit_message: "$(git describe ---tags)"
           repo: ${{ github.repository }}
           branch: ${{ github.head_ref || github.ref_name }}
+          empty: true
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
