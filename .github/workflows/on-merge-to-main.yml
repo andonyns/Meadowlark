@@ -50,6 +50,9 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          git fetch
+          git pull
+          git status
           version=${{steps.set-version.outputs.version}}
           git tag $version
           git push origin $version
