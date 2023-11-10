@@ -70,16 +70,14 @@ jobs:
         uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
 
       - name: Create Meadowlark Pre-Release
-        env:
-            VERSION: ${{needs.upgrade.outputs.version}}
         run: |
 
-          Write-Host $VERSION
+          $version=${{needs.upgrade.outputs.version}}
 
           $body = @{
-            tag_name = "$VERSION"
+            tag_name = "$version"
             target_commitish = "main"
-            name = "$VERSION"
+            name = "$version"
             body = ""
             draft = $false
             prerelease = $true
