@@ -3,7 +3,7 @@
   "packages": [
     "packages/*"
   ],
-  "version": "0.4.0-pre.17",
+  "version": "0.4.0-pre.18",
   "npmClient": "npm",
   "useWorkspaces": true,
   "command": {
