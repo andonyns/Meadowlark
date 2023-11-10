@@ -72,12 +72,12 @@ jobs:
       - name: Create Meadowlark Pre-Release
         run: |
 
-          $version=${{needs.upgrade.outputs.version}}
+          $version="${{needs.upgrade.outputs.version}}"
 
           $body = @{
-            tag_name = "$version"
+            tag_name = $version
             target_commitish = "main"
-            name = "$version"
+            name = $version
             body = ""
             draft = $false
             prerelease = $true
