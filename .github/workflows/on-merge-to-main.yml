@@ -42,7 +42,7 @@ jobs:
 
       - uses: planetscale/ghcommit-action@v0.1.18
         with:
-          commit_message: "${{steps.tag.outputs.version}}"
+          commit_message: "Version: ${{steps.tag.outputs.version}}"
           repo: ${{ github.repository }}
           branch: ${{ github.head_ref || github.ref_name }}
         env:
