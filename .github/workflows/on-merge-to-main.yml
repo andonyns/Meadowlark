@@ -31,15 +31,6 @@ jobs:
       - name: Update versions
         run:  npx lerna@6.6.2 version prerelease --exact --no-git-tag-version --yes
 
-      # Commit all changed files back to the repository
-      - uses: planetscale/ghcommit-action@v0.1.18
-        with:
-          commit_message: "$(git describe ---tags)"
-          repo: ${{ github.repository }}
-          branch: ${{ github.head_ref || github.ref_name }}
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
       - name: Tag Version
         id: tag
         run: |
@@ -48,6 +39,14 @@ jobs:
           version=v$(cat lerna.json | jq -r .version)
           git tag $version
           # echo $version >> "$GITHUB_OUTPUT"
+
+      - uses: planetscale/ghcommit-action@v0.1.18
+        with:
+          commit_message: "${{steps.tag.outputs.version}}"
+          repo: ${{ github.repository }}
+          branch: ${{ github.head_ref || github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
   create-pre-releases:
     name: Create Pre-Releases
