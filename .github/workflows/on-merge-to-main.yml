@@ -43,13 +43,11 @@ jobs:
       - name: Tag Version
         id: tag
         run: |
-          git status
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           version=v$(cat lerna.json | jq -r .version)
           git tag $version
-          git push origin $version
-          echo $version >> "$GITHUB_OUTPUT"
+          # echo $version >> "$GITHUB_OUTPUT"
 
   create-pre-releases:
     name: Create Pre-Releases
