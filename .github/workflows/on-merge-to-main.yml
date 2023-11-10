@@ -35,7 +35,7 @@ jobs:
         id: set-version
         run: |
           version=v$(cat lerna.json | jq -r .version)
-          echo "$version" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - uses: planetscale/ghcommit-action@v0.1.18
         with:
