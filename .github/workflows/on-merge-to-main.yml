@@ -22,6 +22,8 @@ jobs:
         working-directory: Meadowlark-js
     permissions:
       contents: write
+    outputs:
+      version: ${{ steps.tag.outputs.version }}
     steps:
       - name: Checkout the Repo
         uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
@@ -38,6 +40,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
+      - name: Tag Version
+        id: tag
+        run: |
+          git status
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          version=v$(cat lerna.json | jq -r .version)
+          git tag $version
+          git push origin $version
+          echo $version >> "$GITHUB_OUTPUT"
+
   create-pre-releases:
     name: Create Pre-Releases
     runs-on: ubuntu-latest
@@ -50,24 +63,17 @@ jobs:
       - name: Checkout the Repo
         uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
 
-      - name: Tag
-        run: |
-          git status
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          version=v$(cat lerna.json | jq -r .version)
-          git tag $version
-          git push --follow-tags
-
       - name: Create Meadowlark Pre-Release
+        env:
+            VERSION: ${{needs.upgrade.outputs.version}}
         run: |
-          $version=v$(cat lerna.json | jq -r .version)
-          Write-Host $version
+
+          Write-Host $VERSION
 
           $body = @{
-            tag_name = "$version"
+            tag_name = "$VERSION"
             target_commitish = "main"
-            name = $version
+            name = $VERSION
             body = ""
             draft = $false
             prerelease = $true
