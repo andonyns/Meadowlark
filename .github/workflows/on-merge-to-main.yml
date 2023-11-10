@@ -45,18 +45,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      # - name: Tag Version
-      #   id: tag
-      #   run: |
-      #     git config --local user.email "action@github.com"
-      #     git config --local user.name "GitHub Action"
-      #     git fetch
-      #     git log -n 5
-      #     git status
-      #     version=${{steps.set-version.outputs.version}}
-      #     git tag $version
-      #     git push origin $version
-
   create-pre-releases:
     name: Create Pre-Releases
     runs-on: ubuntu-latest
