@@ -79,7 +79,7 @@ jobs:
           $body = @{
             tag_name = "$VERSION"
             target_commitish = "main"
-            name = $VERSION
+            name = "$VERSION"
             body = ""
             draft = $false
             prerelease = $true
