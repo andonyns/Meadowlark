@@ -34,7 +34,6 @@ jobs:
           $version=$(git describe --tags)
           echo $version
 
-
           $body = @{
             tag_name = $version
             target_commitish = "main"
