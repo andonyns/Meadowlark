@@ -5,11 +5,5 @@
   ],
   "version": "0.4.0-pre.21",
   "npmClient": "npm",
-  "useWorkspaces": true,
-  "allowBranch": true,
-  "command": {
-    "version": {
-      "allowBranch": "main"
-    }
-  }
+  "useWorkspaces": true
 }
