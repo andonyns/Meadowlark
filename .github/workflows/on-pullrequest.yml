@@ -128,6 +128,7 @@ jobs:
         with:
           # Need full Git history for calculating the version number
           fetch-depth: 0w
+          ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Update versions
         run:  |
