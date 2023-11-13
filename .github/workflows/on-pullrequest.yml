@@ -127,7 +127,9 @@ jobs:
         uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
 
       - name: Update versions
-        run:  npx lerna@6.6.2 version prerelease --exact --no-git-tag-version --yes
+        run:  |
+          git status
+          npx lerna@6.6.2 version prerelease --exact --no-git-tag-version --yes
 
       - name: Set Version
         id: set-version
