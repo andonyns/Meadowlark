@@ -131,8 +131,13 @@ jobs:
 
       - name: Get changes
         id: changes
-        run: git diff --name-only -r origin/main HEAD -- '*lerna.json' && echo "changed=true" >>$GITHUB_OUTPUT
-
+        run: |
+          current-tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+          current-lerna=v$(cat lerna.json | jq -r .version)
+          echo $current-tag
+          echo $current-lerna
+          echo $current-tag != $current-lerna
+          echo "changed=$current-tag != $current-lerna" >>$GITHUB_OUTPUT
 
       - name: Test
         run: echo ${{ steps.changes.outputs.changed }}
