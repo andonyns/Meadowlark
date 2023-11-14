@@ -136,8 +136,8 @@ jobs:
           echo $cl
           ct=$(git describe --tags $(git rev-list --tags --max-count=1))
           echo $ct
-          echo $($ct != $cl)
-          echo "changed=$($ct != $cl)" >>$GITHUB_OUTPUT
+          echo $("$ct" != "$cl")
+          echo "changed=$("$ct" != "$cl")" >>$GITHUB_OUTPUT
 
 
       - name: Test
