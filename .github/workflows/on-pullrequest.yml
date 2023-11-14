@@ -132,12 +132,12 @@ jobs:
       - name: Get changes
         id: changes
         run: |
-          current-tag=$(git describe --tags `git rev-list --tags --max-count=1`)
-          current-lerna=v$(cat lerna.json | jq -r .version)
-          echo $current-tag
-          echo $current-lerna
-          echo $current-tag != $current-lerna
-          echo "changed=$current-tag != $current-lerna" >>$GITHUB_OUTPUT
+          cl=v$(cat lerna.json | jq -r .version)
+          echo $cl
+          git describe --tags `git rev-list --tags --max-count=1` >> ct
+          echo $ct
+          echo $ct != $cl
+          echo "changed=$ct != $cl" >>$GITHUB_OUTPUT
 
       - name: Test
         run: echo ${{ steps.changes.outputs.changed }}
