@@ -1,0 +1,19 @@
+name: On Pull Request Cancelled
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [ closed ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  upgrade:
+
+    name: Upgrade packages
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Cancelling in progress runs"
