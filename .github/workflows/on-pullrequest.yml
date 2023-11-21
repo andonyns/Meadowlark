@@ -30,9 +30,7 @@ jobs:
     uses: ed-fi-alliance-oss/ed-fi-actions/.github/workflows/repository-scanner.yml@main
 
   upgrade:
-    # Upgrade packages on PR only to avoid a double update when pushed to main
     name: Upgrade packages
-    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     defaults:
       run:
