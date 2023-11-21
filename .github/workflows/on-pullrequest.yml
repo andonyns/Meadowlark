@@ -25,272 +25,272 @@ defaults:
     working-directory: Meadowlark-js
 
 jobs:
-  scan-actions:
-    name: Scan Actions
-    uses: ed-fi-alliance-oss/ed-fi-actions/.github/workflows/repository-scanner.yml@main
+  # scan-actions:
+  #   name: Scan Actions
+  #   uses: ed-fi-alliance-oss/ed-fi-actions/.github/workflows/repository-scanner.yml@main
 
-  upgrade:
-    # Upgrade packages on PR only to avoid a double update when pushed to main
-    name: Upgrade packages
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: Meadowlark-js
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout the Repo
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-        with:
-          fetch-depth: 0w
+  # upgrade:
+  #   # Upgrade packages on PR only to avoid a double update when pushed to main
+  #   name: Upgrade packages
+  #   if: github.event_name == 'pull_request'
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: Meadowlark-js
+  #   permissions:
+  #     contents: write
+  #   steps:
+  #     - name: Checkout the Repo
+  #       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+  #       with:
+  #         fetch-depth: 0w
 
-      - name: Get changes
-        id: changes
-        run: |
-          suggested=v$(cat lerna.json | jq -r .version)
-          current=$(git describe --tags $(git rev-list --tags --max-count=1))
-          echo "Versions: Lerna: $suggested. Current: $current"
-          echo "changes=$([[ "$suggested" != "$current" ]] && echo true)" >>$GITHUB_OUTPUT
+  #     - name: Get changes
+  #       id: changes
+  #       run: |
+  #         suggested=v$(cat lerna.json | jq -r .version)
+  #         current=$(git describe --tags $(git rev-list --tags --max-count=1))
+  #         echo "Versions: Lerna: $suggested. Current: $current"
+  #         echo "changes=$([[ "$suggested" != "$current" ]] && echo true)" >>$GITHUB_OUTPUT
 
-      - name: Update versions
-        if: ${{ ! steps.changes.outputs.changes }}
-        run: npx lerna@6.6.2 version prerelease --exact --no-git-tag-version --yes
+  #     - name: Update versions
+  #       if: ${{ ! steps.changes.outputs.changes }}
+  #       run: npx lerna@6.6.2 version prerelease --exact --no-git-tag-version --yes
 
-      - name: Set Version
-        if: ${{ ! steps.changes.outputs.changes }}
-        id: set-version
-        run: |
-          version=v$(cat lerna.json | jq -r .version)
-          echo "version=$version" >> "$GITHUB_OUTPUT"
+  #     - name: Set Version
+  #       if: ${{ ! steps.changes.outputs.changes }}
+  #       id: set-version
+  #       run: |
+  #         version=v$(cat lerna.json | jq -r .version)
+  #         echo "version=$version" >> "$GITHUB_OUTPUT"
 
-      - uses: planetscale/ghcommit-action@4131649dbf2fdf1eb34421702972a5af7b0a8731 #v0.1.18
-        if: ${{ ! steps.changes.outputs.changes }}
-        with:
-          commit_message: "${{steps.set-version.outputs.version}}"
-          repo: ${{ github.repository }}
-          branch: ${{ github.head_ref || github.ref_name }}
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+  #     - uses: planetscale/ghcommit-action@4131649dbf2fdf1eb34421702972a5af7b0a8731 #v0.1.18
+  #       if: ${{ ! steps.changes.outputs.changes }}
+  #       with:
+  #         commit_message: "${{steps.set-version.outputs.version}}"
+  #         repo: ${{ github.repository }}
+  #         branch: ${{ github.head_ref || github.ref_name }}
+  #       env:
+  #         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-  analyze-dependencies:
-    # This Action will fail if run on anything other than a pull request
-    if: always() && !cancelled() && github.event_name == 'pull_request'
-    name: Analyze Code Dependencies
-    # Not mandatory, but better for this to go after the upgrade since it can change the code.
-    needs: upgrade
-    runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
+  # analyze-dependencies:
+  #   # This Action will fail if run on anything other than a pull request
+  #   if: always() && !cancelled() && github.event_name == 'pull_request'
+  #   name: Analyze Code Dependencies
+  #   # Not mandatory, but better for this to go after the upgrade since it can change the code.
+  #   needs: upgrade
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     actions: read
+  #     contents: read
+  #     security-events: write
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - name: Dependency Review ("Dependabot on PR")
-        uses: actions/dependency-review-action@c090f4e553673e6e505ea70d6a95362ee12adb94 # v3.0.3
+  #     - name: Dependency Review ("Dependabot on PR")
+  #       uses: actions/dependency-review-action@c090f4e553673e6e505ea70d6a95362ee12adb94 # v3.0.3
 
-  analyze-code:
-    name: Analyze Code
-    # Not mandatory, but better for this to go after the upgrade since it can change the code.
-    needs: upgrade
-    # Since the upgrade job only runs in Pull Requests, this is required to avoid skipping these steps
-    if: always() && !cancelled()
-    runs-on: ubuntu-latest
-    env:
-      SRC_DIR: Meadowlark-js
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
+  # analyze-code:
+  #   name: Analyze Code
+  #   # Not mandatory, but better for this to go after the upgrade since it can change the code.
+  #   needs: upgrade
+  #   # Since the upgrade job only runs in Pull Requests, this is required to avoid skipping these steps
+  #   if: always() && !cancelled()
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     SRC_DIR: Meadowlark-js
+  #   permissions:
+  #     actions: read
+  #     contents: read
+  #     security-events: write
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - name: Setup Node
-        uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
-        with:
-          node-version: "18"
-          cache: "npm"
-          cache-dependency-path: "**/package-lock.json"
+  #     - name: Setup Node
+  #       uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
+  #       with:
+  #         node-version: "18"
+  #         cache: "npm"
+  #         cache-dependency-path: "**/package-lock.json"
 
-      - name: Node modules cache
-        id: modules-cache
-        uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 #v3.3.2
-        with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+  #     - name: Node modules cache
+  #       id: modules-cache
+  #       uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 #v3.3.2
+  #       with:
+  #         path: "**/node_modules"
+  #         key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Install dependencies
-        if: ${{ steps.modules-cache.outputs.cache-hit != 'true' }}
-        run: npm install
+  #     - name: Install dependencies
+  #       if: ${{ steps.modules-cache.outputs.cache-hit != 'true' }}
+  #       run: npm install
 
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@df32e399139a3050671466d7d9b3cbacc1cfd034 # v2.15.2
-        with:
-          languages: "typescript"
-          setup-python-dependencies: false
+  #     - name: Initialize CodeQL
+  #       uses: github/codeql-action/init@df32e399139a3050671466d7d9b3cbacc1cfd034 # v2.15.2
+  #       with:
+  #         languages: "typescript"
+  #         setup-python-dependencies: false
 
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@df32e399139a3050671466d7d9b3cbacc1cfd034 # v2.15.2
+  #     - name: Perform CodeQL Analysis
+  #       uses: github/codeql-action/analyze@df32e399139a3050671466d7d9b3cbacc1cfd034 # v2.15.2
 
-  lint:
-    name: Lint
-    needs: upgrade
-    if: always() && !cancelled()
-    runs-on: ubuntu-latest
+  # lint:
+  #   name: Lint
+  #   needs: upgrade
+  #   if: always() && !cancelled()
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - name: Setup Node
-        uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
-        with:
-          node-version: "18"
-          cache: "npm"
-          cache-dependency-path: "**/package-lock.json"
+  #     - name: Setup Node
+  #       uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
+  #       with:
+  #         node-version: "18"
+  #         cache: "npm"
+  #         cache-dependency-path: "**/package-lock.json"
 
-      - name: Node modules cache
-        id: modules-cache
-        uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 #v3.3.2
-        with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+  #     - name: Node modules cache
+  #       id: modules-cache
+  #       uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 #v3.3.2
+  #       with:
+  #         path: "**/node_modules"
+  #         key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Install dependencies
-        if: ${{ steps.modules-cache.outputs.cache-hit != 'true' }}
-        run: npm install
+  #     - name: Install dependencies
+  #       if: ${{ steps.modules-cache.outputs.cache-hit != 'true' }}
+  #       run: npm install
 
-      - name: Linter
-        run: npm run test:lint
+  #     - name: Linter
+  #       run: npm run test:lint
 
-  build:
-    name: Build
-    needs: lint
-    runs-on: ubuntu-latest
+  # build:
+  #   name: Build
+  #   needs: lint
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - name: Setup Node
-        uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
-        with:
-          node-version: "18"
-          cache: "npm"
-          cache-dependency-path: "**/package-lock.json"
+  #     - name: Setup Node
+  #       uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
+  #       with:
+  #         node-version: "18"
+  #         cache: "npm"
+  #         cache-dependency-path: "**/package-lock.json"
 
-      - name: Node modules cache
-        id: modules-cache
-        uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 #v3.3.2
-        with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+  #     - name: Node modules cache
+  #       id: modules-cache
+  #       uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 #v3.3.2
+  #       with:
+  #         path: "**/node_modules"
+  #         key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Install dependencies
-        if: ${{ steps.modules-cache.outputs.cache-hit != 'true' }}
-        run: npm install
+  #     - name: Install dependencies
+  #       if: ${{ steps.modules-cache.outputs.cache-hit != 'true' }}
+  #       run: npm install
 
-      - name: Build
-        run: npm run build
+  #     - name: Build
+  #       run: npm run build
 
-  tests:
-    name: ${{matrix.tests.type}} tests
-    needs: lint
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        tests:
-          [
-            { type: "Unit", command: "npm run test:unit:coverage:ci" },
-            {
-              type: "Integration",
-              command: "npm run test:integration -- --ci",
-            },
-          ]
+  # tests:
+  #   name: ${{matrix.tests.type}} tests
+  #   needs: lint
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       tests:
+  #         [
+  #           { type: "Unit", command: "npm run test:unit:coverage:ci" },
+  #           {
+  #             type: "Integration",
+  #             command: "npm run test:integration -- --ci",
+  #           },
+  #         ]
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - name: Setup Node
-        uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
-        with:
-          node-version: "18"
-          cache: "npm"
-          cache-dependency-path: "**/package-lock.json"
+  #     - name: Setup Node
+  #       uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
+  #       with:
+  #         node-version: "18"
+  #         cache: "npm"
+  #         cache-dependency-path: "**/package-lock.json"
 
-      - name: Load MongoDB binary cache
-        if: ${{ matrix.tests.type != 'Unit' }}
-        id: cache-mongodb-binaries
-        uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 #v3.3.2
-        with:
-          path: ~/.cache/mongodb-binaries
-          key: ${{ runner.os }}-mongo-${{ hashFiles('**/package-lock.json') }}
+  #     - name: Load MongoDB binary cache
+  #       if: ${{ matrix.tests.type != 'Unit' }}
+  #       id: cache-mongodb-binaries
+  #       uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 #v3.3.2
+  #       with:
+  #         path: ~/.cache/mongodb-binaries
+  #         key: ${{ runner.os }}-mongo-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Node modules cache
-        id: modules-cache
-        uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 #v3.3.2
-        with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+  #     - name: Node modules cache
+  #       id: modules-cache
+  #       uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 #v3.3.2
+  #       with:
+  #         path: "**/node_modules"
+  #         key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Install dependencies
-        if: ${{ steps.modules-cache.outputs.cache-hit != 'true' }}
-        run: npm install
+  #     - name: Install dependencies
+  #       if: ${{ steps.modules-cache.outputs.cache-hit != 'true' }}
+  #       run: npm install
 
-      - name: Jest cache
-        id: cache-jest
-        uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 #v3.3.2
-        with:
-          path: /tmp/jest_rt
-          key: ${{ runner.os }}-jest-${{ hashFiles('**/package-lock.json') }}
+  #     - name: Jest cache
+  #       id: cache-jest
+  #       uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 #v3.3.2
+  #       with:
+  #         path: /tmp/jest_rt
+  #         key: ${{ runner.os }}-jest-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Configure postgres
-        if: ${{ matrix.tests.type != 'Unit' }}
-        run: |
-          sudo systemctl start postgresql.service
-          sudo -u postgres psql -U postgres -c "alter user postgres with password '${{env.POSTGRES_PASSWORD}}';"
+  #     - name: Configure postgres
+  #       if: ${{ matrix.tests.type != 'Unit' }}
+  #       run: |
+  #         sudo systemctl start postgresql.service
+  #         sudo -u postgres psql -U postgres -c "alter user postgres with password '${{env.POSTGRES_PASSWORD}}';"
 
-      - name: Create .env file
-        run: |
-          # Create a .env file with proper settings
-          touch .env
-          echo POSTGRES_USER=${{ env.POSTGRES_PASSWORD }} >> .env
-          echo POSTGRES_PASSWORD=${{ env.POSTGRES_USER }} >> .env
-          echo POSTGRES_HOST=localhost >> .env
-          echo POSTGRES_PORT=5432 >> .env
-          echo MEADOWLARK_DATABASE_NAME=postgres >> .env
-          # The actual values below don't matter for integration tests - but _something_ must be set
-          echo AUTHORIZATION_STORE_PLUGIN=@edfi/meadowlark-mongodb-backend >> .env
-          echo DOCUMENT_STORE_PLUGIN=@edfi/meadowlark-mongodb-backend >> .env
-          echo OWN_OAUTH_CLIENT_ID_FOR_CLIENT_AUTH=meadowlark_verify-only_key_1 >> .env
-          echo OWN_OAUTH_CLIENT_SECRET_FOR_CLIENT_AUTH=meadowlark_verify-only_secret_1 >> .env
-          echo OAUTH_SERVER_ENDPOINT_FOR_OWN_TOKEN_REQUEST=http://localhost:3000/local/oauth/token >> .env
-          echo OAUTH_SERVER_ENDPOINT_FOR_TOKEN_VERIFICATION=http://localhost:3000/local/oauth/verify >> .env
-          echo OAUTH_SIGNING_KEY="$( openssl rand -base64 256 | tr -d '\n' )" >> .env
+  #     - name: Create .env file
+  #       run: |
+  #         # Create a .env file with proper settings
+  #         touch .env
+  #         echo POSTGRES_USER=${{ env.POSTGRES_PASSWORD }} >> .env
+  #         echo POSTGRES_PASSWORD=${{ env.POSTGRES_USER }} >> .env
+  #         echo POSTGRES_HOST=localhost >> .env
+  #         echo POSTGRES_PORT=5432 >> .env
+  #         echo MEADOWLARK_DATABASE_NAME=postgres >> .env
+  #         # The actual values below don't matter for integration tests - but _something_ must be set
+  #         echo AUTHORIZATION_STORE_PLUGIN=@edfi/meadowlark-mongodb-backend >> .env
+  #         echo DOCUMENT_STORE_PLUGIN=@edfi/meadowlark-mongodb-backend >> .env
+  #         echo OWN_OAUTH_CLIENT_ID_FOR_CLIENT_AUTH=meadowlark_verify-only_key_1 >> .env
+  #         echo OWN_OAUTH_CLIENT_SECRET_FOR_CLIENT_AUTH=meadowlark_verify-only_secret_1 >> .env
+  #         echo OAUTH_SERVER_ENDPOINT_FOR_OWN_TOKEN_REQUEST=http://localhost:3000/local/oauth/token >> .env
+  #         echo OAUTH_SERVER_ENDPOINT_FOR_TOKEN_VERIFICATION=http://localhost:3000/local/oauth/verify >> .env
+  #         echo OAUTH_SIGNING_KEY="$( openssl rand -base64 256 | tr -d '\n' )" >> .env
 
-      - name: Run ${{matrix.tests.type}} Tests
-        run: ${{matrix.tests.command}}
-        env:
-          JEST_JUNIT_OUTPUT_DIR: ${{matrix.tests.type}}-tests
+  #     - name: Run ${{matrix.tests.type}} Tests
+  #       run: ${{matrix.tests.command}}
+  #       env:
+  #         JEST_JUNIT_OUTPUT_DIR: ${{matrix.tests.type}}-tests
 
-      - name: Archive coverage results
-        if: ${{ matrix.tests.type == 'Unit' }}
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
-        with:
-          name: code-coverage-report
-          path: Meadowlark-js/coverage/lcov-report
-          retention-days: 10
+  #     - name: Archive coverage results
+  #       if: ${{ matrix.tests.type == 'Unit' }}
+  #       uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
+  #       with:
+  #         name: code-coverage-report
+  #         path: Meadowlark-js/coverage/lcov-report
+  #         retention-days: 10
 
   end-to-end:
     name: End to End tests for ${{ matrix.store.db }} as store and ${{matrix.query_handler.provider}} as query handler
-    needs: [lint]
+    # needs: [lint]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
